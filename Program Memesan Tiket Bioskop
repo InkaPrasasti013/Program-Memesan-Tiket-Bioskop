@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class FilmTicket:
-    def _init_(self):
+    def __init__(self):
         self.films = {
             "Godzilla x Kong: The New Empire": 55000,
             "Ronggeng Kematian": 55000,
