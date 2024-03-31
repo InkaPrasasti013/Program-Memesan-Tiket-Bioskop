@@ -8,58 +8,51 @@ class FilmTicket:
             "Exhuma": 55000
         }
 
-    def find_movie(self, search_key):
-        found_movies = []
-        for movie in self.films.keys():
-            if search_key.lower() in movie.lower():
-                found_movies.append(movie)
-        return found_movies
-
     def calculate_total_price(self, film_name, num_tickets):
         if film_name in self.films:
             total_price = self.films[film_name] * num_tickets
             return total_price
         else:
-            return -1  # Mengembalikan nilai negatif jika film tidak ditemukan
+            return -1
 
-    def buy_ticket(self, name, age, day, time):
-        print(f"Selamat datang, {name}! Silakan memesan tiket.")
-        search_input = input("Masukkan kata kunci film yang ingin dicari: ")
-        found_movies = self.find_movie(search_input)
-        if found_movies:
-            print("Film yang ditemukan:")
-            for movie in found_movies:
-                print(movie)
-            chosen_movie = input("Pilih film yang ingin ditonton: ")
-            if chosen_movie in self.films:
-                num_tickets = int(input(f"Masukkan jumlah tiket untuk {chosen_movie}: "))
-                total_price = self.calculate_total_price(chosen_movie, num_tickets)
-                if total_price != -1:
-                    formatted_price = "Rp {:,}".format(total_price).replace(',', '.')
-                    print(f"Total harga untuk {num_tickets} tiket {chosen_movie} adalah {formatted_price}")
-                    if age < 18:
-                        print("Harga tiket termasuk diskon remaja.")
-                    print(f"Anda membeli tiket pada hari {day} pukul {time}.")
-                else:
-                    print("Maaf, film yang dipilih tidak tersedia.")
+    def buy_ticket(self, name, age, day, time, chosen_movie, num_tickets):
+        print(f"Selamat datang, {name}! Silakan memesan tiket untuk film {chosen_movie}.")
+        if chosen_movie in self.films:
+            total_price = self.calculate_total_price(chosen_movie, num_tickets)
+            if total_price != -1:
+                formatted_price = "Rp {:,}".format(total_price).replace(',', '.')
+                print(f"Total harga untuk {num_tickets} tiket {chosen_movie} adalah {formatted_price}")
+                if age < 18:
+                    print("Harga tiket termasuk diskon remaja.")
+                current_day = datetime.now().strftime("%A")
+                current_time = datetime.now().strftime("%H:%M")
+                print(f"Anda membeli tiket pada hari {current_day} pukul {current_time}.")
             else:
-                print("Film yang dipilih tidak valid.")
+                print("Maaf, film yang dipilih tidak tersedia.")
         else:
-            print("Maaf, tidak ditemukan film dengan kata kunci tersebut.")
+            print("Film yang dipilih tidak valid.")
 
+def main():
+    tickets = []  # List untuk menyimpan informasi setiap pembelian tiket
+    
+    while True:
+        person = FilmTicket()
+        person_name = input("Masukkan nama Anda atau ketik 'selesai' untuk keluar: ")
+        
+        if person_name.lower() == 'selesai':
+            break  # Keluar dari loop jika pengguna mengetik 'selesai'
+        
+        person_age = int(input("Masukkan usia Anda: "))
+        person_chosen_movie = input("Masukkan judul film yang ingin Anda tonton: ")
+        person_num_tickets = int(input("Masukkan jumlah tiket yang ingin Anda beli: "))
+        
+        person.buy_ticket(person_name, person_age, "", "", person_chosen_movie, person_num_tickets)
+        tickets.append((person_name, person_age, person_chosen_movie, person_num_tickets))
 
-# Memesan tiket untuk orang pertama
-person1 = FilmTicket()
-person1_name = "Inka Prasasti"
-person1_age = 19
-person1_day = datetime.now().strftime("%A")
-person1_time = datetime.now().strftime("%H:%M")
-person1.buy_ticket(person1_name, person1_age, person1_day, person1_time)
+    print("\nDaftar Pembelian Tiket:")
+    for idx, ticket in enumerate(tickets, 1):
+        name, age, movie, num = ticket
+        print(f"{idx}. Nama: {name}, Usia: {age}, Film: {movie}, Jumlah Tiket: {num}")
 
-# Memesan tiket untuk orang kedua
-person2 = FilmTicket()
-person2_name = "Ernawati Amir"
-person2_age = 19
-person2_day = datetime.now().strftime("%A")
-person2_time = datetime.now().strftime("%H:%M")
-person2.buy_ticket(person2_name, person2_age, person2_day, person2_time)
+if __name__ == "__main__":
+    main()
